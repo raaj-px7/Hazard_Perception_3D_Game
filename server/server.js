@@ -7,11 +7,14 @@ const cookieParser = require('cookie-parser');
 const { userFromRequest, requirePage } = require('./middleware/auth');
 const { COMPANY } = require('./lib/company');
 
-for (const k of ['MONGODB_URI', 'JWT_SECRET']) {
-  if (!process.env[k]) { console.error(`Missing ${k} in .env`); process.exit(1); }
+if (!process.env.VERCEL) {
+  for (const k of ['MONGODB_URI', 'JWT_SECRET']) {
+    if (!process.env[k]) { console.error(`Missing ${k} in .env`); process.exit(1); }
+  }
 }
 
 const app = express();
+app.set('trust proxy', 1);
 const client = path.join(__dirname, '..', 'client');
 const view = (name) => (req, res) => res.sendFile(path.join(client, 'views', name));
 
@@ -61,7 +64,13 @@ app.get('/admin', requirePage('admin'), view('admin.html'));
 
 app.use((req, res) => res.status(404).redirect('/'));
 
-mongoose.connect(process.env.MONGODB_URI).then(() => {
-  const port = process.env.PORT || 3000;
-  app.listen(port, () => console.log(`Hazard Hunt running at http://localhost:${port}`));
-}).catch((err) => { console.error('MongoDB connection failed:', err.message); process.exit(1); });
+// On Vercel, api/index.js handles the MongoDB connection and invokes the app.
+// Locally (or on Render/Railway), start the server the traditional way.
+if (!process.env.VERCEL) {
+  mongoose.connect(process.env.MONGODB_URI).then(() => {
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => console.log(`Hazard Hunt running at http://localhost:${port}`));
+  }).catch((err) => { console.error('MongoDB connection failed:', err.message); process.exit(1); });
+}
+
+module.exports = app;
