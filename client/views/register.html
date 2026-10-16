@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/static/css/auth.css"><title>Register - DeltaMagnus Hazard Hunt</title></head>
+<body><main class="shell"><aside class="brand"><p class="eyebrow" data-company>DeltaMagnus</p><h1>Hazard Hunt</h1><p>Walk the warehouse. Spot what is wrong before it hurts someone.</p></aside>
+<section class="panel"><div class="card">
+<h2>Create your account</h2><p class="sub">Employees register here, then log in to start.</p>
+<form id="register-form" novalidate>
+<label for="company">Company</label><input id="company" value="DeltaMagnus" data-company-input readonly tabindex="-1">
+<label for="employeeId">Employee ID</label><input id="employeeId" name="employeeId" autocomplete="off" required>
+<p class="hint">Given to you by your admin.</p>
+<label for="name">Full name</label><input id="name" name="name" autocomplete="name" required>
+<label for="email">Work email</label><input id="email" name="email" type="email" autocomplete="email" required>
+<label for="password">Password</label><input id="password" name="password" type="password" autocomplete="new-password" required>
+<p class="hint">At least 8 characters, with a letter and a number.</p>
+<label for="confirm">Confirm password</label><input id="confirm" name="confirm" type="password" autocomplete="new-password" required>
+<div id="msg" class="msg" role="alert"></div>
+<button class="primary" type="submit">Register</button>
+</form>
+<p class="alt">Already registered? <a href="/login">Log in</a></p>
+</div></section></main>
+<script type="module" src="/static/js/register.js"></script></body></html>

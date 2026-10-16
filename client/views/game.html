@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hazard Hunt 3D - Interactive Warehouse Safety Game</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/game-assets/styles.css">
+
+    <!-- ES Module Import Map for Three.js and Addons -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- HUD Overlay -->
+    <div id="hud-container">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="brand-badge">
+                <span class="brand-icon">⚠️</span>
+                <span class="brand-title">HAZARD HUNT 3D</span>
+            </div>
+
+            <div class="hud-center">
+                <div class="hud-pill score-pill" id="hud-score">SCORE: 0%  |  0/10 FOUND</div>
+                <div class="hud-pill timer-pill" id="hud-timer">02:00</div>
+            </div>
+
+            <div class="hud-actions">
+                <button class="icon-btn" id="btn-help" title="How to Play">❓</button>
+                <button class="icon-btn" id="btn-restart-hud" title="Leave Inspection">🔄</button>
+                <button class="icon-btn" id="btn-mute" title="Toggle Sound">🔊</button>
+                <button class="icon-btn" id="btn-fullscreen" title="Toggle Fullscreen">⛶</button>
+                <button class="icon-btn" id="btn-logout" title="Log out">🚪</button>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast-container"></div>
+
+        <!-- Bottom Drawer Checklist -->
+        <div class="bottom-drawer">
+            <div class="drawer-header">
+                <span class="drawer-title">HAZARD IDENTIFICATION LOG (FIND 10 HAZARDS)</span>
+                <button class="btn-hint" id="btn-hint">💡 GET HINT</button>
+            </div>
+            <div class="checklist-grid" id="hazard-checklist">
+                <!-- Populated dynamically by UI manager -->
+            </div>
+        </div>
+    </div>
+
+    <!-- START / INSTRUCTIONS MODAL -->
+    <div class="modal-overlay" id="start-modal">
+        <div class="modal-card">
+            <h2>⚠️ HAZARD HUNT 3D</h2>
+            <p class="modal-subtitle">Warehouse Safety Inspection Challenge</p>
+
+            <div class="instructions-grid">
+                <div class="instruction-box">
+                    <h4>🎯 Objective</h4>
+                    <p>Inspect the realistic 3D warehouse and locate all <strong>10 workplace safety hazards</strong> before time runs out.</p>
+                </div>
+                <div class="instruction-box">
+                    <h4>🎮 Controls</h4>
+                    <p><strong>WASD:</strong> Walk your inspector (hold <strong>Shift</strong> to run)<br>
+                    <strong>Arrow Keys / Mouse Drag:</strong> Turn the camera<br>
+                    <strong>E or Click:</strong> Inspect a hotspot (stand close first)<br>
+                    <strong>Mouse Wheel:</strong> Camera distance<br>
+                    <strong>Click Object:</strong> Inspect / Identify Hazard</p>
+                </div>
+                <div class="instruction-box">
+                    <h4>✅ Scoring & Feedback</h4>
+                    <p><strong>Correct Hazard:</strong> +10% & a safety tip card.<br>
+                    <strong>Safe Object:</strong> -5% penalty. Five objects look suspicious but are safe.<br>
+                    <strong>Empty Space:</strong> No effect. Score 60% or more to qualify.</p>
+                </div>
+                <div class="instruction-box">
+                    <h4>🏆 Rating System</h4>
+                    <p>Earn an <strong>S+ Master Inspector</strong> rating by identifying all 10 hazards accurately.</p>
+                </div>
+            </div>
+
+            <button class="primary-btn" id="btn-start-game">START INSPECTION</button>
+        </div>
+    </div>
+
+    <!-- HELP MODAL (movement & objective reference — does not reset the game) -->
+    <div class="modal-overlay" id="help-modal">
+        <div class="modal-card">
+            <h2>❓ HOW TO PLAY</h2>
+            <p class="modal-subtitle">Movement, Controls & Objective</p>
+
+            <div class="instructions-grid">
+                <div class="instruction-box">
+                    <h4>🎯 Objective</h4>
+                    <p>Inspect the realistic 3D warehouse and locate all <strong>10 workplace safety hazards</strong> before time runs out.</p>
+                </div>
+                <div class="instruction-box">
+                    <h4>🎮 Controls</h4>
+                    <p><strong>WASD:</strong> Walk your inspector (hold <strong>Shift</strong> to run)<br>
+                    <strong>Arrow Keys / Mouse Drag:</strong> Turn the camera<br>
+                    <strong>E or Click:</strong> Inspect a hotspot (stand close first)<br>
+                    <strong>Mouse Wheel:</strong> Camera distance<br>
+                    <strong>Click Object:</strong> Inspect / Identify Hazard</p>
+                </div>
+                <div class="instruction-box">
+                    <h4>✅ Scoring & Feedback</h4>
+                    <p><strong>Correct Hazard:</strong> +10% & a safety tip card.<br>
+                    <strong>Safe Object:</strong> -5% penalty. Five objects look suspicious but are safe.<br>
+                    <strong>Empty Space:</strong> No effect. Score 60% or more to qualify.</p>
+                </div>
+                <div class="instruction-box">
+                    <h4>🏆 Rating System</h4>
+                    <p>Earn an <strong>S+ Master Inspector</strong> rating by identifying all 10 hazards accurately.</p>
+                </div>
+            </div>
+
+            <button class="primary-btn" id="btn-close-help">GOT IT</button>
+        </div>
+    </div>
+
+    <!-- HAZARD DETAIL CARD MODAL -->
+    <div class="modal-overlay" id="hazard-modal">
+        <div class="modal-card">
+            <h2 id="hazard-title">Hazard Title</h2>
+            <div class="modal-meta-row">
+                <span class="severity-tag" id="hazard-severity">Critical</span>
+                <span class="category-tag" id="hazard-category">Category</span>
+            </div>
+
+            <p id="hazard-desc" style="line-height: 1.6; margin-bottom: 16px; color: var(--text-main);"></p>
+
+            <div class="tip-box">
+                <strong>OSHA & Safety Recommendation:</strong>
+                <p id="hazard-tip" style="margin-top: 6px;"></p>
+            </div>
+
+            <button class="primary-btn" id="btn-close-hazard">CONTINUE INSPECTION</button>
+        </div>
+    </div>
+
+    <div class="interact-prompt" id="interact-prompt" hidden>🔍 Hotspot nearby: press <b>E</b> or click it to inspect</div>
+
+    <!-- SAFE OBJECT MODAL (shown after a penalty) -->
+    <div class="modal-overlay" id="safe-modal">
+        <div class="modal-card" style="border: 2px solid var(--accent-yellow);">
+            <h2 id="safe-title">Safe Object</h2>
+            <div class="modal-meta-row">
+                <span class="category-tag">Not a hazard: -5% penalty</span>
+            </div>
+            <p id="safe-desc" style="line-height: 1.6; margin-bottom: 16px; color: var(--text-main);"></p>
+            <div class="tip-box">
+                <strong>Why this is correct practice:</strong>
+                <p id="safe-tip" style="margin-top: 6px;"></p>
+            </div>
+            <button class="primary-btn" id="btn-close-safe">CONTINUE INSPECTION</button>
+        </div>
+    </div>
+
+    <!-- VICTORY / FINAL REPORT MODAL -->
+    <div class="modal-overlay" id="victory-modal">
+        <div class="modal-card">
+            <h2>📋 INSPECTION COMPLETE</h2>
+            <p class="modal-subtitle" id="victory-subtitle">Official Safety Report Card</p>
+
+            <div class="rating-card">
+                <div class="rating-grade" id="victory-grade">S+</div>
+                <div class="rating-title" id="victory-rating-title">MASTER SAFETY INSPECTOR</div>
+                
+                <div class="victory-stats-row">
+                    <div class="stat-item">
+                        <h3 id="victory-score">100%</h3>
+                        <p>Final Score</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 id="victory-found">10/10</h3>
+                        <p>Hazards Found</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 id="victory-mistakes">0</h3>
+                        <p>Safe Objects Clicked</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 id="victory-time">02:00</h3>
+                        <p>Total Time</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-table-wrap">
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Hazard</th>
+                            <th>Severity</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody id="victory-hazards-list">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="primary-btn" id="btn-restart">BACK TO WELCOME SCREEN</button>
+        </div>
+    </div>
+
+    <!-- WORKPLACE QUALIFICATION MODAL (SCORE 6 REWARD) -->
+    <div class="modal-overlay" id="qualification-modal">
+        <div class="modal-card" style="border: 2px solid var(--accent-green); text-align: center;">
+            <div style="font-size: 3.5rem; margin-bottom: 12px;">🎉👷‍♂️</div>
+            <h2 style="color: var(--accent-green);">WORKPLACE QUALIFIED!</h2>
+            <p class="modal-subtitle" style="color: #e8f5e9;">Safety Threshold Achieved: 6 / 10 Hazards Identified</p>
+
+            <div class="tip-box" style="text-align: left; background: rgba(0, 230, 118, 0.12);">
+                <strong>✅ Safety Clearance Granted:</strong>
+                <p style="margin-top: 6px;">You have demonstrated essential hazard recognition skills! <strong>You are now qualified to work in this warehouse.</strong></p>
+                <p style="margin-top: 6px; font-size: 0.85rem; color: var(--text-muted);">Continue inspecting to find the remaining 4 hazards and reach Master Inspector status (10/10)!</p>
+            </div>
+
+            <button class="primary-btn" id="btn-close-qualification" style="background: linear-gradient(135deg, var(--accent-green) 0%, #00b0ff 100%); color: #000;">KEEP INSPECTING (4 LEFT)</button>
+        </div>
+    </div>
+
+    <!-- Main JavaScript Entry Point -->
+    <script type="module" src="/game-assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/static/css/auth.css"><title>Log in - DeltaMagnus Hazard Hunt</title></head>
+<body><main class="shell"><aside class="brand"><p class="eyebrow" data-company>DeltaMagnus</p><h1>Hazard Hunt</h1><p>Walk the warehouse. Spot what is wrong before it hurts someone.</p></aside>
+<section class="panel"><div class="card">
+<h2>Log in</h2><p class="sub">Use the account you registered with.</p>
+<form id="login-form" novalidate>
+<label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required>
+<label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required>
+<div id="msg" class="msg" role="alert"></div>
+<button class="primary" type="submit">Log in</button>
+</form>
+<p class="alt">New employee? <a href="/register">Create an account</a></p>
+</div></section></main>
+<script type="module" src="/static/js/login.js"></script></body></html>

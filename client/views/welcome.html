@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/static/css/auth.css"><title>Welcome - Hazard Hunt</title></head>
+<body><main class="welcome">
+<div class="topline"><span class="who" id="who"></span><button class="link-btn" id="logout">Log out</button></div>
+<p class="eyebrow" data-company>DeltaMagnus</p>
+<h1>Welcome, <span id="first-name">inspector</span>.</h1>
+<p class="lead">You are about to inspect a 3D warehouse. Read the rules below, then start when you are ready. You begin with a short 5-question safety quiz. The clock starts when the inspection opens.</p>
+<div class="grid">
+<div class="tile"><h3>Objective</h3><p>Find all <strong>10 workplace safety hazards</strong> in 2 minutes. Five objects only look suspicious but are safe, so inspect carefully.</p></div>
+<div class="tile"><h3>Controls</h3><p><strong>WASD</strong> walks your inspector (<strong>Shift</strong> runs). Drag the mouse or use the <strong>arrow keys</strong> to turn the camera. Walk up to a hotspot, then press <strong>E</strong> or click it to inspect.</p></div>
+<div class="tile"><h3>Scoring</h3><p>Your score is a percentage. Each hazard adds <strong>+10%</strong>. Clicking a safe object costs <strong>-5%</strong>. Score <strong>60% or more</strong> to qualify.</p></div>
+<div class="tile"><h3>Rating</h3><p><strong>100%</strong> earns an <strong>S+ Master Inspector</strong> rating. Ratings run S+, A, B, C and F.</p></div>
+</div>
+<div class="start"><div id="msg" class="msg" role="alert"></div>
+<button class="primary" id="start" type="button">Start inspection</button></div>
+<h2>Your certification</h2>
+<div class="tile" id="cert-box"><p><b id="cert-status">Checking...</b></p><p class="hint" id="cert-detail"></p>
+<p style="margin-top:12px"><a class="link-btn" id="cert-download" href="/api/attempts/certificate.pdf" download hidden>Download certificate (PDF)</a></p></div>
+<h2>Your results</h2>
+<div class="grid" id="stats"></div>
+<p class="hint" id="no-history">No finished inspections yet. Your 5 most recent attempts will appear here.</p>
+<div class="tablewrap" id="history-wrap" hidden><table id="history"><thead><tr><th>Attempt</th><th>Date</th><th>Quiz</th><th>Score</th><th>Hazards</th><th>Safe objects clicked</th><th>Time</th><th>Result</th></tr></thead><tbody></tbody></table></div>
+</main><script type="module" src="/static/js/welcome.js"></script></body></html>

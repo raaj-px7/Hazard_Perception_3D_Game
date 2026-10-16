@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/static/css/auth.css"><title>Admin - Hazard Hunt</title></head>
+<body><main class="welcome wide">
+<div class="topline"><span class="who" id="who"></span><button class="link-btn" id="logout">Log out</button></div>
+<p class="eyebrow" data-company>DeltaMagnus</p>
+<h1>Admin portal</h1>
+<p class="lead">Track every employee's inspection results, issue Employee IDs and export the records.</p>
+
+<div class="grid" id="a-stats"></div>
+
+<h2>Certification</h2>
+<div class="grid" id="c-stats"></div>
+<p class="hint" id="c-empty">Everyone with a certificate is currently valid.</p>
+<div class="tablewrap" id="c-wrap" hidden><table id="c-table"><thead><tr><th>Employee ID</th><th>Name</th><th>Department</th><th>Expires</th><th>Time left</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+<p class="hint" id="c-rules"></p>
+
+<div class="section-head"><h2>Employees</h2>
+<div class="toolbar"><input id="search" type="search" placeholder="Search name, email or Employee ID" aria-label="Search employees"><a class="link-btn" href="/api/admin/export.csv" download>Export all results (CSV)</a></div></div>
+<div id="emp-msg" class="msg" role="alert"></div>
+<div class="tablewrap"><table id="emp-table"><thead><tr><th>Employee ID</th><th>Name</th><th>Department</th><th>Attempts</th><th>Best</th><th>Average</th><th>Last attempt</th><th>Status</th><th>Certificate</th><th>Account</th></tr></thead><tbody></tbody></table></div>
+<p class="hint">Select an employee to see their 5 most recent attempts.</p>
+
+<section class="tile detail" id="detail" hidden>
+<div class="detail-head"><div><h3 id="d-name"></h3><p class="hint" id="d-meta"></p></div>
+<div class="detail-actions"><a class="link-btn" id="d-cert" href="#" download hidden>Certificate (PDF)</a><button class="link-btn" id="d-toggle" type="button"></button><button class="link-btn" id="d-close" type="button">Close</button></div></div>
+<div class="grid" id="d-stats"></div>
+<h3 class="sub">5 most recent attempts</h3>
+<p class="hint" id="d-empty">No finished inspections yet.</p>
+<div class="tablewrap" id="d-wrap" hidden><table id="d-table"><thead><tr><th>Attempt</th><th>Date</th><th>Quiz</th><th>Score</th><th>Hazards</th><th>Safe objects clicked</th><th>Time</th><th>Result</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<h2>Most missed hazards (when they appeared)</h2>
+<p class="hint" id="miss-empty">Shown once employees have finished inspections.</p>
+<div class="tablewrap" id="miss-wrap" hidden><table id="miss-table"><thead><tr><th>Hazard</th><th>Difficulty tag</th><th>Missed when shown</th></tr></thead><tbody></tbody></table></div>
+
+<h2>Employee IDs</h2>
+<section class="tile idbox">
+<h3>Create Employee IDs</h3>
+<form id="id-form" novalidate>
+<label for="ids">Employee IDs (one per line, or separated by commas)</label>
+<textarea id="ids" rows="4" placeholder="EMP-1001&#10;EMP-1002"></textarea>
+<label for="dept">Department (optional)</label><input id="dept" maxlength="60">
+<div id="msg" class="msg" role="alert"></div>
+<button class="primary" type="submit">Create IDs</button>
+</form>
+</section>
+<div class="tablewrap idtable"><table id="id-table"><thead><tr><th>Employee ID</th><th>Department</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+</main><script type="module" src="/static/js/admin.js"></script></body></html>
